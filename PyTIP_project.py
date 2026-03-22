@@ -1,5 +1,9 @@
 # PyTIP_project.py - Threat Intelligence Platform (TIP) Integrated Web Code
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 from flask import Flask, render_template, request, send_file  # ADDED 'send_file'
 import requests
 import json
@@ -14,8 +18,8 @@ app = Flask(__name__)
 
 # --- 1. CONFIGURATION ---
 # *** IMPORTANT: PASTE YOUR KEYS BELOW ***
-OTX_API_KEY = "90efaa796050737c384d33972422d4a83a02f7e115ae0a1b31b880209b9c027a"  # <-- Replace this with your AlienVault OTX key
-VT_API_KEY = "9407708272d8a9c0bd283e02b2b56bf90af0a0eb42216f356ce476917ea50ee0"  # <-- Replace this with your VirusTotal key
+OTX_API_KEY = os.getenv("OTX_API_KEY")  # <-- Replace this with your AlienVault OTX key
+VT_API_KEY = os.getenv("VT_API_KEY")  # <-- Replace this with your VirusTotal key
 
 # Test Indicators for a complete demonstration
 TEST_IP = "185.220.101.37"
