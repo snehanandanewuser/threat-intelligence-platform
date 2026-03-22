@@ -14,4 +14,4 @@ This platform is a specialized cybersecurity tool designed to automate the colle
 * **Framework**: Flask (Web Dashboard)
 * **APIs**: AlienVault OTX, VirusTotal
 * **Database**: SQLite3
-*
+
