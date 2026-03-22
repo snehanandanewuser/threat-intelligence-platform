@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analyst Actionable TIP Dashboard</title>
+    <style>
+        /* Basic CSS for readability and table styling */
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+        /* Style for the search form elements */
+        .search-container { margin-bottom: 20px; }
+        #analystSearch { padding: 10px; width: 400px; border: 1px solid #ccc; border-radius: 5px; }
+
+        /* Generic styling for buttons and links in the search container */
+        .search-container button,
+        .search-container a {
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 5px; /* Spacing */
+        }
+        /* Style for the Search Database button */
+        .search-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        /* Style for Clear Search link */
+        .search-container a:not(.export-button) {
+            color: #333;
+            border: 1px solid #ccc;
+            background-color: #f8f9fa;
+        }
+
+        /* --- CRITICAL FIX: Robust Export Button Styling (Green) --- */
+        .export-button {
+            background-color: #28a745 !important; /* Green background - use !important */
+            color: white !important; /* White text - use !important */
+            border: none !important; /* Remove border */
+            margin-left: 10px !important;
+        }
+        /* --------------------------------------------------------- */
+
+        #indicatorTable { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        #indicatorTable th, #indicatorTable td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        #indicatorTable th { background-color: #f2f2f2; }
+        /* Style the rows with HIGH/CRITICAL scores */
+        .high-score { background-color: #fdd; font-weight: bold; color: #cc0000; }
+    </style>
+</head>
+<body>
+    <h1>Threat Intelligence Platform Dashboard 📊</h1>
+
+    <div id="chart-container" style="width: 80%; margin: 20px auto;">
+        {{ confidence_chart | safe }}
+    </div>
+
+    <div class="search-container">
+        <form method="GET" action="/">
+            <input
+                type="text"
+                id="analystSearch"
+                name="query"
+                placeholder="Search entire database by Indicator, Tag, or Score..."
+                value="{{ search_term }}"
+            >
+            <button type="submit">Search Database</button>
+            <a href="/">Clear Search</a>
+
+            <a href="{{ url_for('export_data', query=search_term) }}" class="export-button">Export to CSV</a>
+        </form>
+    </div>
+
+    <table id="indicatorTable">
+        <thead>
+            <tr>
+                {% for header in headers %}
+                <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in indicators %}
+            <tr class="{% if item['confidence_score'] == 'HIGH (Confirmed Threat)' or item['confidence_score'].startswith('CRITICAL') %}high-score{% endif %}">
+                <td>{{ item['indicator'] }}</td>
+                <td>{{ item['type'] }}</td>
+                <td>{{ item['source'] }}</td>
+                <td>{{ item['threat_tags'] }}</td>
+                <td>{{ item['confidence_score'] }}</td>
+                <td>{{ item['ingestion_date'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
