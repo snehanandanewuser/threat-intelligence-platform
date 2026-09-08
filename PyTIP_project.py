@@ -213,6 +213,53 @@ def create_confidence_chart():
                  title='IOC Confidence Score Distribution',
                  labels={'confidence_score': 'Confidence Level', 'count': 'Number of Indicators'},
                  text='count')
+    # Match Plotly chart with the dark SOC dashboard
+    fig.update_layout(
+        template="plotly_dark",
+
+        paper_bgcolor="#111827",
+        plot_bgcolor="#111827",
+
+        font=dict(
+            color="#cbd5e1",
+            size=13
+        ),
+
+        title=dict(
+            font=dict(
+                color="#f8fafc",
+                size=18
+            )
+        ),
+
+        legend=dict(
+            font=dict(color="#cbd5e1"),
+            title=dict(
+                font=dict(color="#94a3b8")
+            )
+        ),
+
+        margin=dict(
+            l=70,
+            r=40,
+            t=70,
+            b=60
+        )
+    )
+
+    fig.update_xaxes(
+        gridcolor="#253247",
+        linecolor="#334155",
+        tickfont=dict(color="#cbd5e1"),
+        title_font=dict(color="#94a3b8")
+    )
+
+    fig.update_yaxes(
+        gridcolor="#253247",
+        linecolor="#334155",
+        tickfont=dict(color="#cbd5e1"),
+        title_font=dict(color="#94a3b8")
+    )
 
     # Force Y-axis to start at 0 and end correctly
     fig.update_yaxes(range=[0, y_max], fixedrange=True)

@@ -1,99 +1,1020 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Analyst Actionable TIP Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Threat Intelligence Platform</title>
+
     <style>
-        /* Basic CSS for readability and table styling */
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
-        /* Style for the search form elements */
-        .search-container { margin-bottom: 20px; }
-        #analystSearch { padding: 10px; width: 400px; border: 1px solid #ccc; border-radius: 5px; }
 
-        /* Generic styling for buttons and links in the search container */
-        .search-container button,
-        .search-container a {
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
+        /* ================================
+           GLOBAL
+        ================================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+        }
+
+        a {
             text-decoration: none;
-            display: inline-block;
-            vertical-align: top;
-            margin-left: 5px; /* Spacing */
         }
-        /* Style for the Search Database button */
-        .search-container button {
-            background-color: #007bff;
+
+
+        /* ================================
+           TOP NAVBAR
+        ================================= */
+
+        .navbar {
+            height: 72px;
+            background: #111827;
+            border-bottom: 1px solid #263244;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 35px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+
+            background: #2563eb;
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 23px;
+        }
+
+        .brand h2 {
+            font-size: 19px;
             color: white;
+        }
+
+        .brand p {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #86efac;
+            font-size: 13px;
+
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+
+            padding: 8px 13px;
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+
+        /* ================================
+           MAIN CONTAINER
+        ================================= */
+
+        .container {
+            width: 94%;
+            max-width: 1500px;
+            margin: 32px auto;
+        }
+
+
+        /* ================================
+           PAGE HEADER
+        ================================= */
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            color: white;
+            font-size: 27px;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+
+        /* ================================
+           STAT CARDS
+        ================================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: #111827;
+            border: 1px solid #253247;
+            border-radius: 12px;
+            padding: 20px;
+
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: #3b82f6;
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-title {
+            color: #94a3b8;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .stat-icon {
+            font-size: 20px;
+        }
+
+        .stat-number {
+            font-size: 31px;
+            font-weight: bold;
+            color: white;
+            margin-top: 13px;
+        }
+
+        .stat-description {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        .critical-number {
+            color: #f87171;
+        }
+
+        .high-number {
+            color: #fb923c;
+        }
+
+        .source-number {
+            color: #60a5fa;
+        }
+
+
+        /* ================================
+           PANELS
+        ================================= */
+
+        .panel {
+            background: #111827;
+            border: 1px solid #253247;
+            border-radius: 12px;
+
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid #253247;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h3 {
+            color: white;
+            font-size: 16px;
+        }
+
+        .panel-header p {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+
+        /* ================================
+           CHART
+        ================================= */
+
+        .chart-wrapper {
+            padding: 20px;
+            background: #111827;
+        }
+
+        #chart-container {
+            width: 100%;
+        }
+
+
+        /* ================================
+           SEARCH
+        ================================= */
+
+        .search-section {
+            padding: 18px 22px;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+
+            background: #0b1120;
+            color: white;
+
+            border: 1px solid #334155;
+            border-radius: 7px;
+
+            padding: 11px 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #3b82f6;
+        }
+
+        .search-input::placeholder {
+            color: #64748b;
+        }
+
+
+        /* ================================
+           BUTTONS
+        ================================= */
+
+        .btn {
+            padding: 11px 17px;
+            border-radius: 7px;
+
             border: none;
-        }
-        /* Style for Clear Search link */
-        .search-container a:not(.export-button) {
-            color: #333;
-            border: 1px solid #ccc;
-            background-color: #f8f9fa;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            display: inline-block;
         }
 
-        /* --- CRITICAL FIX: Robust Export Button Styling (Green) --- */
-        .export-button {
-            background-color: #28a745 !important; /* Green background - use !important */
-            color: white !important; /* White text - use !important */
-            border: none !important; /* Remove border */
-            margin-left: 10px !important;
+        .search-btn {
+            background: #2563eb;
+            color: white;
         }
-        /* --------------------------------------------------------- */
 
-        #indicatorTable { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        #indicatorTable th, #indicatorTable td { border: 1px solid #ddd; padding: 10px; text-align: left; }
-        #indicatorTable th { background-color: #f2f2f2; }
-        /* Style the rows with HIGH/CRITICAL scores */
-        .high-score { background-color: #fdd; font-weight: bold; color: #cc0000; }
+        .search-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .clear-btn {
+            background: #1e293b;
+            color: #cbd5e1;
+            border: 1px solid #334155;
+        }
+
+        .clear-btn:hover {
+            background: #334155;
+        }
+
+        .export-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .export-btn:hover {
+            background: #15803d;
+        }
+
+
+        /* ================================
+           TABLE
+        ================================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #0f172a;
+        }
+
+        th {
+            padding: 14px 16px;
+
+            color: #94a3b8;
+
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+
+            border-bottom: 1px solid #253247;
+        }
+
+        td {
+            padding: 15px 16px;
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+
+            border-bottom: 1px solid #1e293b;
+        }
+
+        tbody tr {
+            transition: 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #172033;
+        }
+
+        .indicator-value {
+            font-family: Consolas, monospace;
+            color: #93c5fd;
+            font-weight: 600;
+        }
+
+        .source {
+            color: #c4b5fd;
+        }
+
+        .tags {
+            color: #94a3b8;
+        }
+
+
+        /* ================================
+           BADGES
+        ================================= */
+
+        .badge {
+            display: inline-block;
+
+            padding: 5px 9px;
+            border-radius: 20px;
+
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .critical-badge {
+            color: #fca5a5;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.30);
+        }
+
+        .high-badge {
+            color: #fdba74;
+            background: rgba(249, 115, 22, 0.12);
+            border: 1px solid rgba(249, 115, 22, 0.30);
+        }
+
+        .medium-badge {
+            color: #fde047;
+            background: rgba(234, 179, 8, 0.12);
+            border: 1px solid rgba(234, 179, 8, 0.30);
+        }
+
+        .low-badge {
+            color: #86efac;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.30);
+        }
+
+
+        /* ================================
+           SOURCE BADGES
+        ================================= */
+
+        .source-badge {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #c4b5fd;
+
+            padding: 5px 8px;
+            border-radius: 5px;
+
+            font-size: 11px;
+        }
+
+
+        /* ================================
+           EMPTY TABLE
+        ================================= */
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+
+        /* ================================
+           FOOTER
+        ================================= */
+
+        footer {
+            text-align: center;
+
+            color: #475569;
+
+            font-size: 11px;
+
+            margin: 30px 0;
+        }
+
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 0 15px;
+            }
+
+            .system-status {
+                display: none;
+            }
+
+        }
+
     </style>
 </head>
+
+
 <body>
-    <h1>Threat Intelligence Platform Dashboard 📊</h1>
 
-    <div id="chart-container" style="width: 80%; margin: 20px auto;">
-        {{ confidence_chart | safe }}
+
+<!-- ==================================
+     NAVBAR
+=================================== -->
+
+<div class="navbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🛡️
+        </div>
+
+        <div>
+            <h2>ThreatIntel</h2>
+            <p>Threat Intelligence Platform</p>
+        </div>
+
     </div>
 
-    <div class="search-container">
-        <form method="GET" action="/">
-            <input
-                type="text"
-                id="analystSearch"
-                name="query"
-                placeholder="Search entire database by Indicator, Tag, or Score..."
-                value="{{ search_term }}"
+
+    <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        System Online
+
+    </div>
+
+</div>
+
+
+
+<!-- ==================================
+     MAIN CONTENT
+=================================== -->
+
+<div class="container">
+
+
+    <!-- PAGE TITLE -->
+
+    <div class="page-header">
+
+        <h1>Threat Intelligence Dashboard</h1>
+
+        <p>
+            Monitor, analyze and investigate Indicators of Compromise
+            collected from multiple threat intelligence sources.
+        </p>
+
+    </div>
+
+
+
+    <!-- ==================================
+         CALCULATE DASHBOARD VALUES
+    =================================== -->
+
+    {% set total = indicators | length %}
+
+    {% set ns = namespace(
+        critical=0,
+        high=0,
+        medium=0,
+        low=0
+    ) %}
+
+
+    {% for item in indicators %}
+
+        {% if item['confidence_score'].startswith('CRITICAL') %}
+
+            {% set ns.critical = ns.critical + 1 %}
+
+        {% elif item['confidence_score'].startswith('HIGH') %}
+
+            {% set ns.high = ns.high + 1 %}
+
+        {% elif item['confidence_score'].startswith('MEDIUM') %}
+
+            {% set ns.medium = ns.medium + 1 %}
+
+        {% else %}
+
+            {% set ns.low = ns.low + 1 %}
+
+        {% endif %}
+
+    {% endfor %}
+
+
+
+    <!-- ==================================
+         STAT CARDS
+    =================================== -->
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-title">
+                    Total Indicators
+                </span>
+
+                <span class="stat-icon">
+                    ◉
+                </span>
+
+            </div>
+
+            <div class="stat-number">
+                {{ total }}
+            </div>
+
+            <div class="stat-description">
+                Indicators currently displayed
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-title">
+                    Critical Threats
+                </span>
+
+                <span class="stat-icon">
+                    🚨
+                </span>
+
+            </div>
+
+            <div class="stat-number critical-number">
+                {{ ns.critical }}
+            </div>
+
+            <div class="stat-description">
+                Immediate investigation recommended
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-title">
+                    High Risk
+                </span>
+
+                <span class="stat-icon">
+                    ⚠
+                </span>
+
+            </div>
+
+            <div class="stat-number high-number">
+                {{ ns.high }}
+            </div>
+
+            <div class="stat-description">
+                Confirmed high-confidence threats
+            </div>
+
+        </div>
+
+
+
+        <div class="stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-title">
+                    Intelligence Sources
+                </span>
+
+                <span class="stat-icon">
+                    ◈
+                </span>
+
+            </div>
+
+            <div class="stat-number source-number">
+                2
+            </div>
+
+            <div class="stat-description">
+                AlienVault OTX + VirusTotal
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ==================================
+         CHART
+    =================================== -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <h3>Threat Severity Distribution</h3>
+
+                <p>
+                    Distribution of indicators by confidence level
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="chart-wrapper">
+
+            <div id="chart-container">
+
+                {{ confidence_chart | safe }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================================
+         IOC INTELLIGENCE TABLE
+    =================================== -->
+
+    <div class="panel">
+
+
+        <div class="panel-header">
+
+            <div>
+
+                <h3>IOC Intelligence</h3>
+
+                <p>
+                    Search and investigate collected threat indicators
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- SEARCH BAR -->
+
+        <div class="search-section">
+
+            <form
+                method="GET"
+                action="/"
+                class="search-form"
             >
-            <button type="submit">Search Database</button>
-            <a href="/">Clear Search</a>
 
-            <a href="{{ url_for('export_data', query=search_term) }}" class="export-button">Export to CSV</a>
-        </form>
+
+                <input
+                    type="text"
+                    name="query"
+                    class="search-input"
+                    placeholder="Search indicator, threat tag, source or confidence..."
+                    value="{{ search_term }}"
+                >
+
+
+                <button
+                    type="submit"
+                    class="btn search-btn"
+                >
+                    🔍 Search
+                </button>
+
+
+                <a
+                    href="/"
+                    class="btn clear-btn"
+                >
+                    Clear
+                </a>
+
+
+                <a
+                    href="{{ url_for('export_data', query=search_term) }}"
+                    class="btn export-btn"
+                >
+                    ↓ Export CSV
+                </a>
+
+
+            </form>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="table-container">
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>Indicator</th>
+
+                        <th>Type</th>
+
+                        <th>Source</th>
+
+                        <th>Threat Intelligence</th>
+
+                        <th>Severity</th>
+
+                        <th>Ingestion Date</th>
+
+                    </tr>
+
+                </thead>
+
+
+
+                <tbody>
+
+
+                {% for item in indicators %}
+
+
+                    <tr>
+
+
+                        <!-- INDICATOR -->
+
+                        <td class="indicator-value">
+
+                            {{ item['indicator'] }}
+
+                        </td>
+
+
+
+                        <!-- TYPE -->
+
+                        <td>
+
+                            {{ item['type'] }}
+
+                        </td>
+
+
+
+                        <!-- SOURCE -->
+
+                        <td>
+
+                            <span class="source-badge">
+
+                                {{ item['source'] }}
+
+                            </span>
+
+                        </td>
+
+
+
+                        <!-- TAGS -->
+
+                        <td class="tags">
+
+                            {{ item['threat_tags'] }}
+
+                        </td>
+
+
+
+                        <!-- CONFIDENCE -->
+
+                        <td>
+
+
+                            {% if item['confidence_score'].startswith('CRITICAL') %}
+
+                                <span class="badge critical-badge">
+
+                                    ● {{ item['confidence_score'] }}
+
+                                </span>
+
+
+                            {% elif item['confidence_score'].startswith('HIGH') %}
+
+                                <span class="badge high-badge">
+
+                                    ● {{ item['confidence_score'] }}
+
+                                </span>
+
+
+                            {% elif item['confidence_score'].startswith('MEDIUM') %}
+
+                                <span class="badge medium-badge">
+
+                                    ● {{ item['confidence_score'] }}
+
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="badge low-badge">
+
+                                    ● {{ item['confidence_score'] }}
+
+                                </span>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            {{ item['ingestion_date'] }}
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% else %}
+
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty-state"
+                        >
+
+                            No indicators found matching your search.
+
+                        </td>
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
+
     </div>
 
-    <table id="indicatorTable">
-        <thead>
-            <tr>
-                {% for header in headers %}
-                <th>{{ header }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in indicators %}
-            <tr class="{% if item['confidence_score'] == 'HIGH (Confirmed Threat)' or item['confidence_score'].startswith('CRITICAL') %}high-score{% endif %}">
-                <td>{{ item['indicator'] }}</td>
-                <td>{{ item['type'] }}</td>
-                <td>{{ item['source'] }}</td>
-                <td>{{ item['threat_tags'] }}</td>
-                <td>{{ item['confidence_score'] }}</td>
-                <td>{{ item['ingestion_date'] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        Threat Intelligence Platform •
+        AlienVault OTX •
+        VirusTotal •
+        Flask •
+        SQLite
+
+    </footer>
+
+
+</div>
+
+
 </body>
+
 </html>
